@@ -1,6 +1,6 @@
-# project.yml â XcodeGen spec para VERBO Multiagente iOS
+# project.yml  -  XcodeGen spec para VERBO Multiagente iOS
 # Gera o VERBOApp.xcodeproj automaticamente com: xcodegen generate
-# Trinid Â© 2026
+# Trinid (c) 2026
 
 name: VERBOApp
 options:
@@ -14,7 +14,7 @@ options:
   tabWidth: 4
   defaultConfig: Debug
 
-# ConfiguraÃ§Ãµes globais de build
+# Configurações globais de build
 settings:
   base:
     SWIFT_VERSION: "5.10"
@@ -36,13 +36,13 @@ settings:
 
 targets:
 
-  # ââ App principal ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  # -- App principal ----------------------------------------------------------
   VERBOApp:
     type: application
     platform: iOS
     deploymentTarget: "18.0"
 
-    # Fontes Swift â todos os .swift dentro de Sources/VERBOApp/
+    # Fontes Swift  -  todos os .swift dentro de Sources/VERBOApp/
     sources:
       - path: Sources/VERBOApp
         excludes:
@@ -79,7 +79,7 @@ targets:
         Release:
           SWIFT_OPTIMIZATION_LEVEL: "-O"
 
-    # Frameworks Apple necessÃ¡rios
+    # Frameworks Apple necessários
     dependencies:
       - framework: EventKit.framework
         embed: false
@@ -92,14 +92,14 @@ targets:
       - framework: UIKit.framework
         embed: false
 
-    # Scheme de execuÃ§Ã£o
+    # Scheme de execução
     scheme:
       testTargets:
         - VERBOAppTests
       commandLineArguments:
         "-com.apple.CoreData.SQLDebug": false
 
-  # ââ Testes unitÃ¡rios ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  # -- Testes unitários --------------------------------------------------------
   VERBOAppTests:
     type: bundle.unit-test
     platform: iOS
@@ -119,7 +119,7 @@ targets:
     dependencies:
       - target: VERBOApp
 
-# Schemes explÃ­citos
+# Schemes explícitos
 schemes:
   VERBOApp:
     build:
