@@ -249,7 +249,7 @@ extension UserMemoryStore {
         }
         if profile.contacts.count > 20 {
             let trimmed = profile.contacts.prefix(20)
-            profile.contacts = Dictionary(uniqueKeysWithValues: trimmed)
+            profile.contacts = Dictionary(uniqueKeysWithValues: Array(trimmed))
         }
         save()
     }
