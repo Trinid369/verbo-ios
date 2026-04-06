@@ -39,7 +39,7 @@ final class UserMemoryStore {
     private let maxPerSession = 60
     private let queue = DispatchQueue(label: "verbo.memory", qos: .utility)
 
-    private(set) var profile = UserProfile()
+    var profile = UserProfile()
 
     init() {
         loadProfile()
