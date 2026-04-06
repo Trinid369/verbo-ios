@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+    <!-- App Identity -->
+    <key>CFBundleIdentifier</key>
+    <string>com.trinid.verbo</string>
+    <key>CFBundleName</key>
+    <string>VERBO</string>
+    <key>CFBundleDisplayName</key>
+    <string>VERBO</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>CFBundleShortVersionString</key>
+    <string>3.0.0</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>pt-BR</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+
+    <!-- iOS version -->
+    <key>MinimumOSVersion</key>
+    <string>18.0</string>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+
+    <!-- Orientation -->
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+    </array>
+    <key>UISupportedInterfaceOrientations~ipad</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+
+    <!-- Status bar -->
+    <key>UIStatusBarStyle</key>
+    <string>UIStatusBarStyleLightContent</string>
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <false/>
+
+    <!-- App appearance â dark mode forced -->
+    <key>UIUserInterfaceStyle</key>
+    <string>Dark</string>
+
+    <!-- Privacy Permissions -->
+    <key>NSCalendarsUsageDescription</key>
+    <string>O VERBO usa o calendÃ¡rio para criar eventos e exibir sua agenda quando vocÃª pedir.</string>
+    <key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+    <string>O VERBO precisa de acesso ao calendÃ¡rio para criar novos eventos por vocÃª.</string>
+    <key>NSContactsUsageDescription</key>
+    <string>O VERBO acessa seus contatos para encontrar endereÃ§os ao compor mensagens.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>O VERBO usa o microfone para entrada de voz nas conversas.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>O VERBO usa reconhecimento de fala para transcrever suas mensagens de voz.</string>
+    <key>NSUserNotificationsUsageDescription</key>
+    <string>O VERBO envia alertas proativos sobre eventos, mercado e mensagens importantes.</string>
+    <key>NSFaceIDUsageDescription</key>
+    <string>O VERBO pode usar Face ID para proteger configuraÃ§Ãµes sensÃ­veis.</string>
+
+    <!-- Background Modes -->
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>background-processing</string>
+        <string>background-fetch</string>
+    </array>
+
+    <!-- Background Task Identifiers -->
+    <key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>com.trinid.verbo.proactive-check</string>
+        <string>com.trinid.verbo.profile-sync</string>
+        <string>com.trinid.verbo.metrics-refresh</string>
+    </array>
+
+    <!-- URL Schemes (deep link into VERBO) -->
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>com.trinid.verbo</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>verbo</string>
+            </array>
+        </dict>
+    </array>
+
+    <!-- Query Schemes (apps VERBO can open) -->
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>whatsapp</string>
+        <string>telegram</string>
+        <string>tg</string>
+        <string>mailto</string>
+        <string>instagram</string>
+        <string>twitter</string>
+        <string>x-twitter</string>
+    </array>
+
+    <!-- App Intents -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <false/>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <!-- Anthropic API -->
+            <key>api.anthropic.com</key>
+            <dict>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <false/>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+            </dict>
+            <!-- OpenAI API -->
+            <key>api.openai.com</key>
+            <dict>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <false/>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+            </dict>
+            <!-- Binance API -->
+            <key>api.binance.com</key>
+            <dict>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <false/>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+            </dict>
+        </dict>
+    </dict>
+
+    <!-- SwiftUI launch -->
+    <key>UILaunchScreen</key>
+    <dict>
+        <key>UIColorName</key>
+        <string>vBackground</string>
+    </dict>
+
+    <!-- App Intents Extension -->
+    <key>INPreferredSimulatedDevice</key>
+    <string>iPhone</string>
+
+</dict>
+</plist>
