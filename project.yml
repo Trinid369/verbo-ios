@@ -1,0 +1,141 @@
+# project.yml â XcodeGen spec para VERBO Multiagente iOS
+# Gera o VERBOApp.xcodeproj automaticamente com: xcodegen generate
+# Trinid Â© 2026
+
+name: VERBOApp
+options:
+  bundleIdPrefix: com.trinid
+  deploymentTarget:
+    iOS: "18.0"
+  xcodeVersion: "16.0"
+  createIntermediateGroups: true
+  usesTabs: false
+  indentWidth: 4
+  tabWidth: 4
+  defaultConfig: Debug
+
+# ConfiguraÃ§Ãµes globais de build
+settings:
+  base:
+    SWIFT_VERSION: "5.10"
+    IPHONEOS_DEPLOYMENT_TARGET: "18.0"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    ALWAYS_SEARCH_USER_PATHS: "NO"
+    ENABLE_TESTABILITY: "YES"
+    GCC_NO_COMMON_BLOCKS: "YES"
+    CLANG_ENABLE_MODULES: "YES"
+    SWIFT_OPTIMIZATION_LEVEL: "-Onone"
+    DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
+  configs:
+    Debug:
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+      ENABLE_TESTABILITY: "YES"
+    Release:
+      SWIFT_OPTIMIZATION_LEVEL: "-O"
+      VALIDATE_PRODUCT: "YES"
+
+targets:
+
+  # ââ App principal ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  VERBOApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.0"
+
+    # Fontes Swift â todos os .swift dentro de Sources/VERBOApp/
+    sources:
+      - path: Sources/VERBOApp
+        excludes:
+          - "**/*.md"
+          - "**/Resources/**"
+
+    # Recursos (Assets, Info.plist, etc.)
+    resources:
+      - path: Assets.xcassets
+        optional: true
+      - path: Sources/VERBOApp/Resources/Info.plist
+        optional: true
+
+    # Info.plist do app
+    info:
+      path: Sources/VERBOApp/Resources/Info.plist
+
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.trinid.verbo
+        PRODUCT_NAME: VERBO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        CODE_SIGN_IDENTITY: ""
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        INFOPLIST_FILE: Sources/VERBOApp/Resources/Info.plist
+        ENABLE_PREVIEWS: "YES"
+        SWIFT_EMIT_LOC_STRINGS: "YES"
+        DEVELOPMENT_TEAM: ""
+      configs:
+        Debug:
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+        Release:
+          SWIFT_OPTIMIZATION_LEVEL: "-O"
+
+    # Frameworks Apple necessÃ¡rios
+    dependencies:
+      - framework: EventKit.framework
+        embed: false
+      - framework: UserNotifications.framework
+        embed: false
+      - framework: BackgroundTasks.framework
+        embed: false
+      - framework: AppIntents.framework
+        embed: false
+      - framework: UIKit.framework
+        embed: false
+
+    # Scheme de execuÃ§Ã£o
+    scheme:
+      testTargets:
+        - VERBOAppTests
+      commandLineArguments:
+        "-com.apple.CoreData.SQLDebug": false
+
+  # ââ Testes unitÃ¡rios ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+  VERBOAppTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "18.0"
+
+    sources:
+      - Tests/VERBOTests
+
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.trinid.verbo.tests
+        CODE_SIGN_IDENTITY: ""
+        CODE_SIGNING_REQUIRED: "NO"
+        INFOPLIST_FILE: ""
+        SWIFT_VERSION: "5.10"
+
+    dependencies:
+      - target: VERBOApp
+
+# Schemes explÃ­citos
+schemes:
+  VERBOApp:
+    build:
+      targets:
+        VERBOApp: all
+        VERBOAppTests: testing
+    run:
+      config: Debug
+      simulatorName: iPhone 16
+    test:
+      config: Debug
+      targets:
+        - VERBOAppTests
+      coverageTargets:
+        - VERBOApp
+    profile:
+      config: Release
+    archive:
+      config: Release
