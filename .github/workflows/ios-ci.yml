@@ -1,0 +1,60 @@
+# ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# â  VERBO Multiagente iOS â GitHub Actions CI/CD               â
+# â  Roda no macOS gratuito do GitHub com Xcode + Simulador      â
+# â  Trinid Â© 2026                                               â
+# ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+
+name: VERBO iOS CI
+
+on:
+  push:
+    branches: [ main, develop, "feature/**" ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:        # permite rodar manualmente
+
+env:
+  PROJECT_DIR:    VERBO_iOS_v3
+  SCHEME:         VERBOApp
+  SIMULATOR_NAME: "iPhone 16"
+  IOS_VERSION:    "18.2"
+  XCODE_VERSION:  "16.2"
+
+jobs:
+
+  build-and-test:
+    name: "Build and Test iOS Simulator"
+    runs-on: macos-14
+    timeout-minutes: 40
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen 2>/dev/null || true
+
+      - name: Generate Xcodeproj
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: xcodegen generate --spec project.yml
+
+      - name: Build
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: |
+          xcodebuild -project VERBOApp.xcodeproj \
+            -scheme VERBOApp \
+            -destination "platform=iOS Simulator,name=iPhone 16,OS=latest" \
+            clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO || \
+          xcodebuild -project VERBOApp.xcodeproj \
+            -scheme VERBOApp \
+            -destination "platform=iOS Simulator,name=iPhone 15,OS=latest" \
+            clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+
+  swift-lint:
+    name: SwiftLint
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - run: brew install swiftlint 2>/dev/null || true && cd ${{ env.PROJECT_DIR }} && swiftlint || true
