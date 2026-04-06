@@ -1,6 +1,6 @@
-# project.yml  -  XcodeGen spec para VERBO Multiagente iOS
+# project.yml — XcodeGen spec para VERBO Multiagente iOS
 # Gera o VERBOApp.xcodeproj automaticamente com: xcodegen generate
-# Trinid (c) 2026
+# Trinid © 2026
 
 name: VERBOApp
 options:
@@ -18,6 +18,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.10"
+    SWIFT_STRICT_CONCURRENCY: minimal
     IPHONEOS_DEPLOYMENT_TARGET: "18.0"
     TARGETED_DEVICE_FAMILY: "1,2"
     ALWAYS_SEARCH_USER_PATHS: "NO"
@@ -36,13 +37,13 @@ settings:
 
 targets:
 
-  # -- App principal ----------------------------------------------------------
+  # ── App principal ──────────────────────────────────────────────────────────
   VERBOApp:
     type: application
     platform: iOS
     deploymentTarget: "18.0"
 
-    # Fontes Swift  -  todos os .swift dentro de Sources/VERBOApp/
+    # Fontes Swift — todos os .swift dentro de Sources/VERBOApp/
     sources:
       - path: Sources/VERBOApp
         excludes:
@@ -99,7 +100,7 @@ targets:
       commandLineArguments:
         "-com.apple.CoreData.SQLDebug": false
 
-  # -- Testes unitários --------------------------------------------------------
+  # ── Testes unitários ────────────────────────────────────────────────────────
   VERBOAppTests:
     type: bundle.unit-test
     platform: iOS
