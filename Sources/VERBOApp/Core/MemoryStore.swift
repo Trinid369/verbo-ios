@@ -1,10 +1,10 @@
 // MemoryStore.swift
-// MemÃ³ria persistente com perfil do usuÃ¡rio â aprende hÃ¡bitos, preferÃªncias e contexto
-// Trinid Â© 2026
+// Memória persistente com perfil do usuário — aprende hábitos, preferências e contexto
+// Trinid © 2026
 
 import Foundation
 
-// MARK: - Entrada de MemÃ³ria
+// MARK: - Entrada de Memória
 
 struct MemoryEntry: Codable, Identifiable {
     var id      = UUID()
@@ -14,7 +14,7 @@ struct MemoryEntry: Codable, Identifiable {
     var session : String
 }
 
-// MARK: - Perfil do UsuÃ¡rio
+// MARK: - Perfil do Usuário
 
 struct UserProfile: Codable {
     var name          : String = ""
@@ -22,12 +22,12 @@ struct UserProfile: Codable {
     var language      : String = "pt-BR"
     var timezone      : String = "America/Sao_Paulo"
     var interests     : [String] = []
-    var routines      : [String] = []   // "trabalha de manhÃ£", "usa Bitcoin"
-    var contacts      : [String: String] = [:] // "meu pai" â "JoÃ£o Silva"
-    var preferences   : [String: String] = [:] // "tom" â "direto"
+    var routines      : [String] = []   // "trabalha de manhã", "usa Bitcoin"
+    var contacts      : [String: String] = [:] // "meu pai" → "João Silva"
+    var preferences   : [String: String] = [:] // "tom" → "direto"
     var lastSeen      : Date = Date()
     var totalTurns    : Int = 0
-    var topAgents     : [String: Int] = [:] // agente â usos
+    var topAgents     : [String: Int] = [:] // agente → usos
 }
 
 // MARK: - User Memory Store Principal
@@ -64,7 +64,7 @@ final class UserMemoryStore {
         }
     }
 
-    // MARK: - Observar e aprender sobre o usuÃ¡rio
+    // MARK: - Observar e aprender sobre o usuário
 
     func observe(text: String) {
         profile.totalTurns += 1
@@ -75,9 +75,9 @@ final class UserMemoryStore {
         // Aprende nome
         if profile.name.isEmpty {
             let patterns = [
-                #"meu nome (Ã©|e) ([A-ZÃ-Ã][a-zÃ¡Ã Ã¢Ã£Ã©ÃªÃ­Ã³Ã´ÃµÃºÃ¼Ã§]+)"#,
-                #"sou o ([A-ZÃ-Ã][a-zÃ¡Ã Ã¢Ã£Ã©ÃªÃ­Ã³Ã´ÃµÃºÃ¼Ã§]+)"#,
-                #"me chamo ([A-ZÃ-Ã][a-zÃ¡Ã Ã¢Ã£Ã©ÃªÃ­Ã³Ã´ÃµÃºÃ¼Ã§]+)"#,
+                #"meu nome (é|e) ([A-ZÀ-Ú][a-záàâãéêíóôõúüç]+)"#,
+                #"sou o ([A-ZÀ-Ú][a-záàâãéêíóôõúüç]+)"#,
+                #"me chamo ([A-ZÀ-Ú][a-záàâãéêíóôõúüç]+)"#,
             ]
             for pat in patterns {
                 if let range = text.range(of: pat, options: .regularExpression, locale: .current),
@@ -100,9 +100,9 @@ final class UserMemoryStore {
         // Aprende interesses
         let interestKeywords = [
             "bitcoin": "criptomoedas", "btc": "criptomoedas", "eth": "criptomoedas",
-            "soja": "agronegÃ³cio", "frete": "logÃ­stica", "ciot": "logÃ­stica",
+            "soja": "agronegócio", "frete": "logística", "ciot": "logística",
             "instagram": "redes sociais", "twitter": "redes sociais",
-            "python": "programaÃ§Ã£o", "swift": "programaÃ§Ã£o", "api": "programaÃ§Ã£o",
+            "python": "programação", "swift": "programação", "api": "programação",
             "trading": "mercado financeiro", "bolsa": "mercado financeiro",
         ]
         for (kw, category) in interestKeywords {
@@ -114,7 +114,7 @@ final class UserMemoryStore {
         // Aprende contatos
         let contactPatterns = [
             (#"meu pai (.+?)(?:\.|,|$)"#, "meu pai"),
-            (#"minha mÃ£e (.+?)(?:\.|,|$)"#, "minha mÃ£e"),
+            (#"minha mãe (.+?)(?:\.|,|$)"#, "minha mãe"),
             (#"meu chefe (.+?)(?:\.|,|$)"#, "meu chefe"),
             (#"minha esposa (.+?)(?:\.|,|$)"#, "minha esposa"),
         ]
@@ -156,7 +156,7 @@ final class UserMemoryStore {
     func userProfilePrompt() -> String {
         var lines: [String] = []
         if !profile.name.isEmpty {
-            lines.append("UsuÃ¡rio: \(profile.name)")
+            lines.append("Usuário: \(profile.name)")
         }
         if !profile.interests.isEmpty {
             lines.append("Interesses: \(profile.interests.joined(separator: ", "))")
@@ -169,7 +169,7 @@ final class UserMemoryStore {
             lines.append("Tom preferido: \(tom)")
         }
         if !lines.isEmpty {
-            return "Perfil do usuÃ¡rio:\n" + lines.joined(separator: "\n")
+            return "Perfil do usuário:\n" + lines.joined(separator: "\n")
         }
         return ""
     }
@@ -179,26 +179,26 @@ final class UserMemoryStore {
     func recall(session: String, query: String = "") -> String {
         let entries = sessions[session] ?? []
         guard !entries.isEmpty else {
-            return "ð­ Nenhum histÃ³rico nesta sessÃ£o ainda.\n\n\(profileSummary())"
+            return "📭 Nenhum histórico nesta sessão ainda.\n\n\(profileSummary())"
         }
         let recent = entries.suffix(12)
-        var lines = recent.map { "[\($0.role)]: \($0.content.prefix(120))â¦" }
+        var lines = recent.map { "[\($0.role)]: \($0.content.prefix(120))…" }
 
         if !profile.name.isEmpty {
-            lines.insert("ð¤ UsuÃ¡rio: \(profile.name)", at: 0)
+            lines.insert("👤 Usuário: \(profile.name)", at: 0)
         }
         if !profile.interests.isEmpty {
-            lines.insert("ð¯ Interesses: \(profile.interests.joined(separator: ", "))", at: 1)
+            lines.insert("🎯 Interesses: \(profile.interests.joined(separator: ", "))", at: 1)
         }
 
-        return "ð§  **MemÃ³ria ativa:**\n\n" + lines.joined(separator: "\n")
+        return "🧠 **Memória ativa:**\n\n" + lines.joined(separator: "\n")
     }
 
     func profileSummary() -> String {
         guard !profile.name.isEmpty else { return "" }
-        var s = "Sei que seu nome Ã© **\(profile.name)**"
+        var s = "Sei que seu nome é **\(profile.name)**"
         if !profile.interests.isEmpty {
-            s += " e vocÃª tem interesse em \(profile.interests.prefix(3).joined(separator: ", "))"
+            s += " e você tem interesse em \(profile.interests.prefix(3).joined(separator: ", "))"
         }
         return s + "."
     }
@@ -219,10 +219,10 @@ final class UserMemoryStore {
 
     func allSessions() -> [String] { Array(sessions.keys) }
 
-    /// ExpÃµe `saveProfile` como API pÃºblica (chamada por SettingsView)
+    /// Expõe `saveProfile` como API pública (chamada por SettingsView)
     func save() { saveProfile() }
 
-    /// Reseta o perfil do usuÃ¡rio para os valores padrÃ£o
+    /// Reseta o perfil do usuário para os valores padrão
     func resetProfile() {
         profile = UserProfile()
         saveProfile()
@@ -235,7 +235,7 @@ final class UserMemoryStore {
         for file in files { try? FileManager.default.removeItem(at: file) }
     }
 
-    // MARK: - PersistÃªncia
+    // MARK: - Persistência
 
     private func persistSession(_ session: String) {
         guard let entries = sessions[session],
