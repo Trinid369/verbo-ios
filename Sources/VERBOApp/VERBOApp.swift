@@ -1,6 +1,6 @@
 // VERBOApp.swift
 // Ponto de entrada principal do VERBO Multiagente
-// Trinid Â© 2026
+// Trinid © 2026
 
 import SwiftUI
 import BackgroundTasks
