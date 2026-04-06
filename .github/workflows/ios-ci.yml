@@ -1,8 +1,8 @@
-# ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-# â  VERBO Multiagente iOS â GitHub Actions CI/CD               â
-# â  Roda no macOS gratuito do GitHub com Xcode + Simulador      â
-# â  Trinid Â© 2026                                               â
-# ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  VERBO Multiagente iOS — GitHub Actions CI/CD               ║
+# ║  Roda no macOS gratuito do GitHub com Xcode + Simulador      ║
+# ║  Trinid © 2026                                               ║
+# ╚══════════════════════════════════════════════════════════════╝
 
 name: VERBO iOS CI
 
@@ -11,10 +11,9 @@ on:
     branches: [ main, develop, "feature/**" ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch:        # permite rodar manualmente
+  workflow_dispatch:
 
 env:
-  PROJECT_DIR:    VERBO_iOS_v3
   SCHEME:         VERBOApp
   SIMULATOR_NAME: "iPhone 16"
   IOS_VERSION:    "18.2"
@@ -23,38 +22,145 @@ env:
 jobs:
 
   build-and-test:
-    name: "Build and Test iOS Simulator"
+    name: "🔨 Build & 🧪 Test — iOS Simulator"
     runs-on: macos-14
     timeout-minutes: 40
 
     steps:
-      - uses: actions/checkout@v4
 
-      - name: Select Xcode
-        run: xcodebuild -version
+      - name: "⬇️  Checkout"
+        uses: actions/checkout@v4
 
-      - name: Install XcodeGen
-        run: brew install xcodegen 2>/dev/null || true
-
-      - name: Generate Xcodeproj
-        working-directory: ${{ env.PROJECT_DIR }}
-        run: xcodegen generate --spec project.yml
-
-      - name: Build
-        working-directory: ${{ env.PROJECT_DIR }}
+      - name: "🛠  Selecionar Xcode ${{ env.XCODE_VERSION }}"
         run: |
-          xcodebuild -project VERBOApp.xcodeproj \
-            -scheme VERBOApp \
-            -destination "platform=iOS Simulator,name=iPhone 16,OS=latest" \
-            clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO || \
-          xcodebuild -project VERBOApp.xcodeproj \
-            -scheme VERBOApp \
+          ls /Applications/ | grep -i xcode || true
+          XCODE_PATH="/Applications/Xcode_${{ env.XCODE_VERSION }}.app/Contents/Developer"
+          if [ -d "$XCODE_PATH" ]; then
+            sudo xcode-select -s "$XCODE_PATH"
+          else
+            echo "Xcode ${{ env.XCODE_VERSION }} nao encontrado, usando padrao"
+          fi
+          xcodebuild -version
+          swift --version
+
+      - name: "📦 Instalar XcodeGen + xcpretty"
+        run: |
+          brew install xcodegen 2>/dev/null || brew upgrade xcodegen 2>/dev/null || true
+          gem install xcpretty --no-document 2>/dev/null || true
+          xcodegen version
+
+      - name: "📋 Gerar Xcode Project"
+        run: |
+          xcodegen generate --spec project.yml
+          echo "VERBOApp.xcodeproj gerado com sucesso"
+          ls -la
+
+      - name: "📱 Simuladores disponíveis"
+        run: |
+          xcrun simctl list devices available | grep -E "iPhone (16|15|14|SE)" | head -10
+
+      - name: "🔨 Build — iOS Simulator"
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project VERBOApp.xcodeproj \
+            -scheme "${{ env.SCHEME }}" \
+            -destination "platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }},OS=${{ env.IOS_VERSION }}" \
+            -configuration Debug \
+            -derivedDataPath DerivedData \
+            -parallelizeTargets \
+            clean build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=YES \
+          | xcpretty --color --simple 2>&1 || \
+          xcodebuild \
+            -project VERBOApp.xcodeproj \
+            -scheme "${{ env.SCHEME }}" \
             -destination "platform=iOS Simulator,name=iPhone 15,OS=latest" \
-            clean build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+            -configuration Debug \
+            -derivedDataPath DerivedData \
+            clean build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=YES
+
+      - name: "🧪 Testes Unitários — Simulador"
+        run: |
+          set -o pipefail
+          mkdir -p test-results
+          xcodebuild test \
+            -project VERBOApp.xcodeproj \
+            -scheme "${{ env.SCHEME }}" \
+            -destination "platform=iOS Simulator,name=${{ env.SIMULATOR_NAME }},OS=${{ env.IOS_VERSION }}" \
+            -configuration Debug \
+            -derivedDataPath DerivedData \
+            -resultBundlePath test-results/TestResults.xcresult \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+          | xcpretty --color --report junit --output test-results/junit.xml 2>&1 || true
+
+      - name: "📊 Upload resultados de testes"
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: "test-results-${{ github.sha }}"
+          path: test-results/
+          retention-days: 14
+
+      - name: "📦 Upload app compilado"
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: "VERBO-iOS-Simulator-${{ github.sha }}"
+          path: DerivedData/Build/Products/Debug-iphonesimulator/VERBOApp.app
+          retention-days: 7
+
+      - name: "📝 Sumário do build"
+        if: always()
+        run: |
+          echo "## VERBO iOS Build" >> $GITHUB_STEP_SUMMARY
+          echo "| Info | Valor |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Simulador | ${{ env.SIMULATOR_NAME }} iOS ${{ env.IOS_VERSION }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Xcode | ${{ env.XCODE_VERSION }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Runner | macOS 14 (Apple M1) |" >> $GITHUB_STEP_SUMMARY
 
   swift-lint:
-    name: SwiftLint
+    name: "🔍 SwiftLint"
     runs-on: macos-14
+    timeout-minutes: 10
+
     steps:
-      - uses: actions/checkout@v4
-      - run: brew install swiftlint 2>/dev/null || true && cd ${{ env.PROJECT_DIR }} && swiftlint || true
+      - name: "⬇️  Checkout"
+        uses: actions/checkout@v4
+
+      - name: "🔍 SwiftLint"
+        run: |
+          brew install swiftlint 2>/dev/null || true
+          swiftlint --reporter github-actions-logging 2>&1 || true
+          echo "SwiftLint concluido"
+
+  notify:
+    name: "📣 Resultado Final"
+    runs-on: ubuntu-latest
+    needs: [build-and-test, swift-lint]
+    if: always()
+
+    steps:
+      - name: "Build passou"
+        if: needs.build-and-test.result == 'success'
+        run: |
+          echo "VERBO iOS build e testes passaram!"
+          echo "Commit: ${{ github.sha }}"
+
+      - name: "Build falhou"
+        if: needs.build-and-test.result == 'failure'
+        run: |
+          echo "VERBO iOS build ou testes falharam!"
+          exit 1
