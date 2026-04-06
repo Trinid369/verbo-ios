@@ -1,0 +1,64 @@
+# .swiftlint.yml â ConfiguraÃ§Ã£o do SwiftLint para VERBO iOS
+# Trinid Â© 2026
+
+included:
+  - Sources
+  - Tests
+
+excluded:
+  - DerivedData
+  - .build
+  - "**/*.generated.swift"
+
+# Regras ativas
+opt_in_rules:
+  - empty_count
+  - explicit_init
+  - first_where
+  - force_unwrapping
+  - implicitly_unwrapped_optional
+  - overridden_super_call
+  - private_outlet
+  - redundant_nil_coalescing
+  - toggle_bool
+  - trailing_closure
+
+# Regras desabilitadas (por estilo do projeto)
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+  - function_body_length
+  - type_body_length
+  - file_length
+  - todo                    # permite TODO: no cÃ³digo
+  - force_cast              # necessÃ¡rio em alguns pontos de AppDelegate
+
+# ConfiguraÃ§Ãµes de limites
+identifier_name:
+  min_length: 2
+  max_length: 60
+  excluded:
+    - id
+    - p
+    - c
+    - e
+    - d
+    - t0
+
+type_name:
+  min_length: 2
+  max_length: 50
+
+function_parameter_count:
+  warning: 8
+  error: 12
+
+nesting:
+  type_level:
+    warning: 3
+  function_level:
+    warning: 5
+
+cyclomatic_complexity:
+  warning: 15
+  error: 25
