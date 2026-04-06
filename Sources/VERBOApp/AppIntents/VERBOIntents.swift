@@ -55,6 +55,7 @@ struct VERBOShortcutsProvider: AppShortcutsProvider {
 
 // MARK: - Ask VERBO Intent
 
+@MainActor
 struct AskVERBOIntent: AppIntent {
     static let title: LocalizedStringResource = "Perguntar ao VERBO"
     static let description = IntentDescription("Envie uma pergunta diretamente para o VERBO.")
@@ -64,7 +65,7 @@ struct AskVERBOIntent: AppIntent {
     var question: String
 
     func perform() async throws -> some ReturnsValue<String> & ProvidesDialog {
-        let engine = VERBOEngine()
+        let engine = VERBOEngine.shared
         await engine.process(text: question)
         let reply = engine.messages.last?.content ?? "Sem resposta"
         return .result(value: reply, dialog: IntentDialog(stringLiteral: reply))
@@ -73,6 +74,7 @@ struct AskVERBOIntent: AppIntent {
 
 // MARK: - Check Market Intent
 
+@MainActor
 struct CheckMarketIntent: AppIntent {
     static let title: LocalizedStringResource = "Sinal de Mercado"
     static let description = IntentDescription("Obtém o sinal de mercado atual para um ativo.")
@@ -83,7 +85,7 @@ struct CheckMarketIntent: AppIntent {
 
     func perform() async throws -> some ReturnsValue<String> & ProvidesDialog {
         let prompt = "Qual é o sinal de mercado atual para \(asset)?"
-        let engine = VERBOEngine()
+        let engine = VERBOEngine.shared
         await engine.process(text: prompt)
         let reply = engine.messages.last?.content ?? "Dados indisponíveis"
         return .result(value: reply, dialog: IntentDialog(stringLiteral: reply))
@@ -107,6 +109,7 @@ struct CreateAgentIntent: AppIntent {
 
 // MARK: - Quick Note Intent
 
+@MainActor
 struct QuickNoteIntent: AppIntent {
     static let title: LocalizedStringResource = "Nota Rápida para VERBO"
     static let description = IntentDescription("Salva uma nota rápida para o VERBO lembrar.")
@@ -117,7 +120,7 @@ struct QuickNoteIntent: AppIntent {
 
     func perform() async throws -> some ReturnsValue<String> & ProvidesDialog {
         let prompt = "Lembra disso: \(note)"
-        let engine = VERBOEngine()
+        let engine = VERBOEngine.shared
         await engine.process(text: prompt)
         let reply = "Anotado: \(note)"
         return .result(value: reply, dialog: IntentDialog(stringLiteral: reply))
@@ -126,6 +129,7 @@ struct QuickNoteIntent: AppIntent {
 
 // MARK: - Schedule Meeting Intent
 
+@MainActor
 struct ScheduleMeetingIntent: AppIntent {
     static let title: LocalizedStringResource = "Agendar Reunião"
     static let description = IntentDescription("Cria um evento no calendário via VERBO.")
@@ -144,7 +148,7 @@ struct ScheduleMeetingIntent: AppIntent {
         formatter.locale = Locale(identifier: "pt_BR")
 
         let prompt = "Agenda '\(title)' para \(formatter.string(from: date))"
-        let engine = VERBOEngine()
+        let engine = VERBOEngine.shared
         await engine.process(text: prompt)
         let reply = engine.messages.last?.content ?? "Evento criado"
         return .result(value: reply, dialog: IntentDialog(stringLiteral: reply))
