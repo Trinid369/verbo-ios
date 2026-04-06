@@ -201,7 +201,7 @@ final class MessageAgent: VERBOAgent {
 
     private func proactiveNotificationExample(contact: String) -> String {
         return """
-        � **Mensagem importante de \(contact)!**
+        🔔 **Mensagem importante de \(contact)!**
 
         Recebi uma notificação que pode ser relevante.
 
@@ -431,81 +431,497 @@ final class CalendarAgent: VERBOAgent {
         let title = extractEventTitle(from: text)
         let time  = extractTime(from: text)
         return """
-        � **Lembrete configurado:**
+        🔔 **Lembrete configurado:**
 
-        • **L]pꎊ��
-]K�\�[\H��[X��]H��]JB�8�(�
-��]X[�Ί��
-[YK�\�[\H��ڙH��[YJB��[X��]\��X�\�[HHX�\���[�\[X��]\��S�˂�]]�H[H
-��Z�\�\�8����T���8���[X��]\ʊ�������B���]�]H�[���[[�\�\�Z\��[ۓY\��Y�J]N���[��]N���[��[YN���[��HO���[���]\������<'��H
-��]�[��[�Z�YΊ����8�(�
-��0�][Ί��
-]K�\�[\H���ݛ�]�[�Ȉ�]JB�8�(�
-��]N���
-]K�\�[\H��HY�[�\���]JB�8�(�
-��ܘN���
-[YK�\�[\H��HY�[�\���[YJB��\�H�[�\�]]�X]X�[Y[�K]]ܚ^�H�X�\���[��[[�0�\�[΂�
-��Z�\�\�8����T���8����[[�0�\�[�8���\�Z]\��������B���]�]H�[���[[�\��\X�[]Y\�
-HO���[���]\������<'��H
-��Y�[�HH�[[�0�\�[Ί����8�(�
-��ܚX\�]�[�Ί���Y�[�H�][�p���[X[�0��0��M��8�(�
-��\�\�����[���H���[[��]�[��Ȃ�8�(�
-��[X��]N����YH[X��HH�\�Y�WH0��L��8�(�
-��\�ۚX�[YYN����[���[�[H]��H\�H�[X[�OȂ�����B���]�]H�[��^�X�]�[�]J���H^���[��HO���[��]��\HȘY�[�H��ܚXH��YX�[ۘH��]�[�ȋ��][�p��ȋ�[X[�0�ȋ�ڙH����ȋ�\�H���ȋ��H��[X��]H��]�\�H��YH�B�]�ܙ�H^���\ۙ[���\\�]Y�N���]\�X�\�B���[\��\��\��۝Z[��	���\��\�Y
+        • **O quê:** \(title.isEmpty ? "Lembrete" : title)
+        • **Quando:** \(time.isEmpty ? "Hoje" : time)
 
-JH	��	���[���B���Y�^
+        Lembretes precisam de acesso ao app Lembretes do iOS.
+        Ative em **Ajustes → VERBO → Lembretes**.
+        """
+    }
 
-JB��]\���ܙ˚��[�Y
-�\\�]܎���B�B���]�]H�[��^�X�]J���H^���[��HO���[��]��\�H^���\��\�Y
+    private func calendarPermissionMessage(title: String, date: String, time: String) -> String {
+        return """
+        📅 **Evento planejado:**
 
-B�Y���\���۝Z[���ڙH�H��]\���ڙH�B�Y���\���۝Z[���[X[�0�ȊH��]\���[X[�0�ȈB�Y�]X]�H^��[��Jَ�ȗ�K�K��K�J΋�̋
-JOȈ��[ۜΈ��Y�[\�^�\��[ۊH�]\����[��^�X]�JB�B��]\�����B���]�]H�[��^�X�[YJ���H^���[��HO���[��Y�]X]�H^��[��Jَ�ȗ�K�Z��_�K�N�̟H���[ۜΈ��Y�[\�^�\��[ۊH�]\����[��^�X]�JB�B��]\�����B���]�]H�[���\���Q]J]N���[��[YN���[��HO�]H�\���\ۙ[��H�[[�\���\��[��]P��\ۙ[��˞YX\��[۝�^K��\��Z[�]WK���N�]J
-JB��Y�]HOH�[X[�0�Ȉ��\ۙ[�˙^HH
-��\ۙ[�˙^H��
-H
-�B�B��Y�]�\�X]�H[YK��[��Jَ�Ȋ�K�JZΏ���JH���[ۜΈ��Y�[\�^�\��[ۊH]\��H��[��[YV��\�X]�JK���\ۙ[���\\�]Y�N��\�X�\��]
-�\�X�\��[�����JB�Y�]H[�
-\�˙�\������H���\ۙ[�˚�\�HB�Y�\�˘��[��K]HH[�
-\���WJH���\ۙ[�˛Z[�]HHHB�B���]\���[[�\���\��[��]J���N���\ۙ[��H��]J
-K�Y[��[YR[�\��[
-͌
-B�B�B����PT�ΈH�\�X\��Y�[����[�[�\���\�X\��Y�[���T���Y�[��]X�]�\�YH�\�X\��Y�[�
+        • **Título:** \(title.isEmpty ? "Novo evento" : title)
+        • **Data:** \(date.isEmpty ? "a definir" : date)
+        • **Hora:** \(time.isEmpty ? "a definir" : time)
 
-B�]Y�[�QH��\�X\��\���]Y�[��[YHH�\�]Z\�H��]Y�[�X�ۈH�XYۚY�Z[���\�Ȃ���[��[�J^���[��[��[�N��T���[��[�JH\�[��O���[��]��\�H^���\��\�Y
+        Para salvar automaticamente, autorize o acesso ao Calendário:
+        **Ajustes → VERBO → Calendário → Permitir**
+        """
+    }
 
-B����\�]Z\�HHY\��Y��[�[��Z\�Y���\���۝Z[����ȊH��\���۝Z[����]��[��H��\���۝Z[���ܞ\ȊH�]\��]�Z]ܞ\ԙ\�X\��
-^�^
-B�B����Y��XXܛ�X�۰�ZX��Y���\���۝Z[���[��p����ȊH��\���۝Z[��&�W&�2"�����vW"�6��F��2�'�""���&WGW&��7&�&W6V&6��FW�C�FW�B��Р���w&��V|;66���b��vW"�6��F��2�'6��"�����vW"�6��F��2�&֖Ɔ�"�����vW"�6��F��2�&&��"���&WGW&�w&�&W6V&6��FW�C�FW�B��Р�&WGW&�6V&6�6&�ƗF�W2���Р�&�fFRgV�27'�F�&W6V&6��FW�C�7G&��r�7��2��7G&��r��&WGW&�"" �	�8���W7V�67'�F����d��r������&FF�2V�FV��&V��6��f�wW&R�V���6��W�;VW2(i"�2��ࠢ���:Ɨ6RW7G'WGW&�GVâ���(
-"g&�Wv�&�����&W'B�6RG&�6f�&Т(
-"��FV��dU$$�����6�76�f�6F�"��(
-"&Vv��S�FWFV7FF�f�E����Т(
-"6�v�âwV&F�F�6��f�&�:|:6�FR6��f�\:��6�����&�:Ɨ6R6���WFF�v����$�Ɨ6%D2�U4EB6����d��r �"" �Р�&�fFRgV�2�7&�&W6V&6��FW�C�7G&��r���7G&��r��&WGW&�"" �	�����W7V�6�7&�V6��;F֖6�����(
-"��f��FS���e$TB�&�6�6V�G&���$tP�(
-"��FF�2F�7��:�fV�3�����f�:|:6���"��W&�2�<:&�&���ƗV�FW���&FF�2V�FV��&V��6��f�wW&R2f��FW2V���6��W�;VW2(i"�2(i"�7&𢢢ࠢ�76��Ɨ6#��(
-"��7F�FR�W&�2V�F�f�2FR&�66�(
-"6�'&V�:|:6�E��9r%D29r6����F�F�W0�(
-"&Vv��RFR�W&6F�v��&��"" �Р�&�fFRgV�2w&�&W6V&6��FW�C�7G&��r���7G&��r��&WGW&�"" �	�����W7V�6w&��V|;66���u$U�������(
-"��6�F:|;VW3���4$�B�#"�U4��(
-"��g&WFS����EB&W6��\:|:6�b�sb�##`�(
-"��6��G&F�3���45b�4E"�&'FW ��6��f�wW&R6W76�:�u$U�V���6��W�;VW2(i"�2(i"w&�ࠢ�76�6�7V�#��(
-"&6�2R&&�G&vV�FR�W&6F�(
-"7W7F���|:�7F�6�F�F��g&WFR�4��B�VL:v��(
-"&\:v��F�F�W6V��"" �Р�&�fFRgV�26V&6�6&�ƗF�W2����7G&��r��&WGW&�"" �	�J���vV�FRFRW7V�6�4��uT�$�2���5B������(
-"���W&6F󢢢6�F:|;VW2�6���2�&Vv��P�(
-"���7&󢢢�W&�2���f�:|:6��ƗV�FW�v��&��(
-"��w&󢢢6���֖Ɔ��g&WFR�6��G&F�0�(
-"��vV#���'W66R<:��FW6RFR��f�&�:|;VW0��W&wV�FRF�&WF�V�FS�%W7V�66�'&R�FV�� �"" �ЧР����$���6�6��vV�@��f���6�726�6��vV�C�dU$$�vV�B��7FF�2�WB6�&VB�6�6��vV�B����WBvV�D�B�'6�6�� ��WBvV�D��R�%6�6�� ��WBvV�D�6���'7V&R��B�V�6�� ��gV�2��F�R�FW�C�7G&��r�V�v��S�dU$$�V�v��R�7��2��7G&��r���WB��vW"�FW�B���vW&66VB�����b��vW"�6��F��2�&��7Fw&�"��&WGW&�7&VFT��7Fw&��7B�FW�C�FW�B�Т�b��vW"�6��F��2�'Gv�GFW""�����vW"�6��F��2�'GvVWB"��&WGW&�7&VFUGvVWB�FW�C�FW�B�Т�b��vW"�6��F��2�&Ɩ�VF��"��&WGW&�7&VFTƖ�VD���7B�FW�C�FW�B�Т�b��vW"�6��F��2�'F��F��"��&WGW&�7&VFUF��F��67&�B�FW�C�FW�B�Р�&WGW&�6�6��6&�ƗF�W2���Р�&�fFRgV�27&VFT��7Fw&��7B�FW�C�7G&��r���7G&��r���WBF��2�W�G&7EF��2�g&�ӢFW�B��&WGW&�"" �	�;������FR�7B(	B��7Fw&Ӣ������6F���7VvW&�F����%vV�W&FT6F���F��3�F��2�� �����6�Fw3����5F��2�&W�6��t�67W'&V�6W2��c�""�v�F��""��7fW&&�6�6'&6��6���f6����VƆ�"��,:&�󢢢��(	3#�����"V�v��V�F���f�&�F󢢢6'&�76V�N(	3�6ƖFW2�R&VV�2^(	330����,;7����76󢢠�F�v&6��f�&�"&WR'&�"���7Fw&�6���FW�F�6��F����R&FF&�;�&Ɩ6���f��"&W'6��Ɨ�"�"" �Р�&�fFRgV�27&VFUGvVWB�FW�C�7G&��r���7G&��r���WBF��2�W�G&7EF��2�g&�ӢFW�B���WBGvVWB�7G&��r�/	�*vV�W&FT6F���F��3�F��2��5F��2�&Vf���R��7fW&&�"�&Vf���#����&WGW&�"" �	�
-bGvVWB&��F󢢠��%GvVWB� ���GvVWB�6�V�B��#�6&7FW&W2�����F�&VB7VvW&�F�����2(	B6��FW�F�"�2(IBFW6V�f��f��V�F�2�2(	B6���F��7F��ࠢF�v&7&�F�&VB6���WF"&W��F�"�"" �Р�&�fFRgV�27&VFTƖ�VD���7B�FW�C�7G&��r���7G&��r���WBF��2�W�G&7EF��2�g&�ӢFW�B��&WGW&�"" �	�+����7BƖ�VD�㢢�����L:�GV�󢢢�������7F�FR6�'&RF��2�Р���W7G'WGW&����	���&�&�V�VRF�F�&�f�76����V�g&V�FV�F��2���ࠢ&V�F�VR���6�v�BfƖ�6��ࠢ2Ɯ:|;VW2VR�VF&�֖�W'7V7F�f�����(:2���.���(:2���>���(:2��ࠢ�VRf�<:�6��6��V�FR&���	�p����F�Ӣ��&�f�76�����2,;7�������FVâ��S(	33�g&0�"" �Р�&�fFRgV�27&VFUF��F��67&�B�FW�C�7G&��r���7G&��r���WBF��2�W�G&7EF��2�g&�ӢFW�B��&WGW&�"" �	��R��67&�BF��F���c2�������������(	372����%f�<:�6&�VRF��2��FR�fF�7W'&VV�FV�FU�� ����FW6V�f��f��V�F��>(	3CW2�����(
-"��F���FF��R��7L;7&�Т(
-"��F�#��W�V���,:F�6�Т(
-"��F�3��F�67F���:fV�Р���5D�C^(	3c2����%6VwVR&��26�'&RF��2�Ɩ��&���	�* ����6��27VvW&�F�3���G&V�F��r�6V������VvV�F���2�6�Fw2�W&wV�F&V�v��V�F�"" �Р�&�fFRgV�26�6��6&�ƗF�W2����7G&��r��&WGW&�"" �	�;��vV�FR6�6�â����(
-"����7Fw&Ӣ���7G2�&VV�2�7F�&�W2�6'&�76V��(
-"��Gv�GFW"�����GvVWG2RF�&VG0�(
-"��Ɩ�VD�㢢�'F�v�2R�7G2&�f�76����0�(
-"��F��F�����67&�G2FRl:�FV�F�v�&7&��7B��Ff�&��6�'&R�FV�� �"" �Р�&�fFRgV�2W�G&7EF��2�g&��FW�C�7G&��r���7G&��r���WB6����&7&�"�'�7B"�'�7FR"�&��7Fw&�"�'Gv�GFW""�&Ɩ�VF��"�'F��F��"��'�7F"�'&"�'6�'&R"�'V�"�'V�"�&FR"�&F�"�&F%Т�WBv�&G2�FW�B���vW&66VB���6����V�G2�6W&FVD'���v��FW76W2���f��FW"�6���6��F��2�C�bbC�6�V�B�"Т�&Vf���B��&WGW&�v�&G2�4V�G��'FV6����v�"�v�&G2����VB�6W&F�#�""��Р�&�fFRgV�2vV�W&FT6F���F��3�7G&��r���7G&��r���WBFV��FW2���$FW66�'&��v���7,:�fV�6�'&RF��2�VRf��VF"7VW'7V7F�f�"��$fW&FFR6�'&RF��2�VR��w\:��FR6��F�"��%F��2�&Vf�����WW&66VB���F��2�G&�f�'7B�����VR&V�F�FW��2FR�����2�"��%�"VRF��2�:R��2���'F�FRF�VRf�<:���v���"��Т&WGW&�FV��FW2�&�F��V�V�V�B����%6�'&RF��2�(
-n �ЧР����$���6�FW"vV�@��f���6�726�FW$vV�C�dU$$�vV�B��7FF�2�WB6�&VB�6�FW$vV�B����WBvV�D�B�&6�FW" ��WBvV�D��R�$<;6F�v� ��WBvV�D�6���&7W&ǖ'&6W2 ��gV�2��F�R�FW�C�7G&��r���7G&��r���WB��vW"�FW�B���vW&66VB�����b��vW"�6��F��2�'�F���"�����vW"�6��F��2�'67&�B"���&WGW&��F���FV��FR�FW�C�FW�B��Т�b��vW"�6��F��2�'7v�gB"�����vW"�6��F��2�&��2"���&WGW&�7v�gEFV��FR�FW�C�FW�B��Т�b��vW"�6��F��2�&�"�����vW"�6��F��2�&V�G���B"���&WGW&��FV��FR�FW�C�FW�B��Т�b��vW"�6��F��2�&&6�FW7B"�����vW"�6��F��2�&W7G&L:�v�"���&WGW&�&6�FW7EFV��FR�FW�C�FW�B��Р�&WGW&�6�FW$6&�ƗF�W2���Р�&�fFRgV�2�F���FV��FR�FW�C�7G&��r���7G&��r��&WGW&�"" �	�+���67&�B�F����FV��FR�������F���2dU$$�67&�B(IBvW&F�WF��F�6�V�FP����'B�F22@����'B�V��2� ��FVb��ₓ��2D�D����V�V�F"�;6v�6V��70���b����U����%�������#����ₐ� ��FW67&Wf�;6v�6V�FWFƆW2R�vW&,:�<;6F�v�6���WF���R6��V7FR����&<;6F�v�&�f�76������7F�L:&�V��"" �Р�&�fFRgV�27v�gEFV��FR�FW�C�7G&��r���7G&��r��&WGW&�"" �	�;��7v�gET�6����V�B�FV��FR������7v�g@�7G'V7Bוf�Ws�f�Wr��7FFR&�fFRf"f�VR�" ��f"&�G��6��Rf�Wr��e7F6���FW�B�$��:dU$$�"���f��B��F�F�R��FW�Df�V�B�%f��""�FW�C�Gf�VR��Т�FF��r���ТТ ��F�vV�6����V�FR&V6�6RvW&��<;6F�v�6���WF��"" �Р�&�fFRgV�2�FV��FR�FW�C�7G&��r���7G&��r��&WGW&�"" �	�H����f7D��FV��FR�������F���g&��f7F����'Bf7D��g&���F�F�2���'B&6T��FV����f7D��F�F�S�%dU$$��"���6�72&WVW7B�&6T��FV���W76vS�7G ����7B�"�6�B"��7��2FVb6�B�&W�&WVW7B���&WGW&��'&W7��6R#�b%&�6W76�F��&W��W76vW�'Т ��6��f�wW&RFWFƆW2F�V�G���BRvW&�fW'<:6�6���WF�"" �Р�&�fFRgV�2&6�FW7EFV��FR�FW�C�7G&��r���7G&��r��&WGW&�"" �	�8���&6�FW7BFV��FR���d��r�������F���2dU$$�G&F��r(	B��d��r&6�FW7@����'B�F22@��6�727G&FVw���FVb����E��6V�b�7��&���$%D2�U4EB"���6V�b�7��&���7��&���6V�b��6�F���2��Р�FVb6�v�6V�b�Fb���2���&W'B�6R�T��%4��V�#�Fe�&6��6R%��Wv҇7��#���Vₐ�V�S�Fe�&6��6R%��Wv҇7��S���Vₐ�&WGW&�$%U�"�bV�#���5����V�S���5���V�6R%4T�� � ��6��V7FR����&�6�7FV�6���WF�6��&6�FW7F��r&V��"" �Р�&�fFRgV�26�FW$6&�ƗF�W2����7G&��r��&WGW&�"" �	�+���vV�FRFR<;6F�v󢢠��(
-"���F��㢢�67&�G2��:Ɨ6R�WF��:|:6�(
-"��7v�gB���3���6����V�FW27v�gET��(
-"������f7D��V�G���G2$U5@�(
-"��G&F��s���&6�FW7F��r��d��p�(
-"��w&󢢢<:�7V��2u$U��4��@��F�v�&7&�V�67&�B�F���&�F&Vf� �"" �ЧР����$���&�7F�fR���F� �����7F� �f���6�72&�7F�fT���F�#��'6W'f&�T�&�V7B��7FF�2�WB6�&VB�&�7F�fT���F�"����V&Ɨ6�VBf"�47F�fR�f�6P��&�fFRvV�f"V�v��S�dU$$�V�v��S�&�fFRf"F��W#�F��W#�gV�27F'B�V�v��S�dU$$�V�v��R���6V�b�V�v��R�V�v��P��47F�fR�G'VP���fW&�f�6:|:6�W&�;6F�66FR֖�WF�0�F��W"�F��W"�66�VGV�VEF��W"�v�F�F��T��FW'fâ3�&WVG3�G'VR���vV�6V�e����F6��v�B6V�c��6�V6���ТТР�gV�27F�����F��W#���fƖFFR���F��W"�����47F�fR�f�6P�Р�&�fFRgV�26�V6���7��2��wV&B�WBV�v��RV�6R�&WGW&�Р���fW&�f�6:|:6�FR��&F�F�&7VvW7L;VW0��WB��W"�6�V�F"�7W'&V�B�6����V�B���W"�g&�ӢFFR������b��W"�����V�v��R�V�VWVU&�7F�fR���W76vS�.)������&��F���V�W7L:6WR'&�Vf��r�F�����wV�F&Vf&��&�L:&�&���S�"��vV�D�C�&�&6�W7G&F�""��Р��b��W"�����V�v��R�V�VWVU&�7F�fR���W76vS�/	�ɒ��f��FRW�VF�V�FR��VW"VRWR&W7V��VR6��FV6WR���RR&W&R&��23�"��vV�D�C�&�V��'�"��ТР�gV�26V�D���VF�FT�W'B��W76vS�7G&��r�vV�D�C�7G&��r�&wV&F��"���V�v��S��V�VWVU&�7F�fR��W76vS��W76vR�vV�D�C�vV�D�B��Р����6��F�V��$u&�7F�fUv�&�W"GW&�FR&6�w&�V�BF6�0�gV�2'V�&6�w&�V�D6�V6���7��2���WB��W"�6�V�F"�7W'&V�B�6����V�B���W"�g&�ӢFFR����wV&B��W"���bb��W"��#"V�6R�&WGW&�Т��f�&Vw&�V�B6�V6�VRFW76��W'F&V�v��R6RV�W7F�fW"F�f�v�B6�V6����Ч�
+    private func calendarCapabilities() -> String {
+        return """
+        📅 **Agente de Calendário:**
+
+        • **Criar evento:** "agenda reunião amanhã às 14h"
+        • **Listar:** "mostra próximos eventos"
+        • **Lembrete:** "me lembra de [tarefa] às 10h"
+        • **Disponibilidade:** "tenho janela livre esta semana?"
+        """
+    }
+
+    private func extractEventTitle(from text: String) -> String {
+        let skip = ["agenda", "cria", "adiciona", "evento", "reunião", "amanhã", "hoje",
+                    "às", "para", "no", "na", "lembrete", "avisa", "me"]
+        let words = text.components(separatedBy: .whitespaces)
+            .filter { !skip.contains($0.lowercased()) && $0.count > 2 }
+            .prefix(5)
+        return words.joined(separator: " ")
+    }
+
+    private func extractDate(from text: String) -> String {
+        let lower = text.lowercased()
+        if lower.contains("hoje")   { return "hoje" }
+        if lower.contains("amanhã") { return "amanhã" }
+        if let match = text.range(of: #"\d{1,2}/\d{1,2}(?:/\d{2,4})?"#, options: .regularExpression) {
+            return String(text[match])
+        }
+        return ""
+    }
+
+    private func extractTime(from text: String) -> String {
+        if let match = text.range(of: #"\d{1,2}h\d{0,2}|\d{1,2}:\d{2}"#, options: .regularExpression) {
+            return String(text[match])
+        }
+        return ""
+    }
+
+    private func resolveDate(date: String, time: String) -> Date {
+        var components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: Date())
+
+        if date == "amanhã" {
+            components.day = (components.day ?? 0) + 1
+        }
+
+        if let hourMatch = time.range(of: #"(\d{1,2})h?:?(\d{0,2})"#, options: .regularExpression) {
+            let parts = String(time[hourMatch]).components(separatedBy: CharacterSet(charactersIn: "h:"))
+            if let h = Int(parts.first ?? "") { components.hour = h }
+            if parts.count > 1, let m = Int(parts[1]) { components.minute = m }
+        }
+
+        return Calendar.current.date(from: components) ?? Date().addingTimeInterval(3600)
+    }
+}
+
+// MARK: - Research Agent
+
+final class ResearchAgent: VERBOAgent {
+    static let shared = ResearchAgent()
+    let agentID   = "researcher"
+    let agentName = "Pesquisa"
+    let agentIcon = "magnifyingglass"
+
+    func handle(text: String, engine: VERBOEngine) async -> String {
+        let lower = text.lowercased()
+
+        // Pesquisa de mercado financeiro
+        if lower.contains("btc") || lower.contains("bitcoin") || lower.contains("crypto") {
+            return await cryptoResearch(text: text)
+        }
+
+        // Dados macroeconômicos
+        if lower.contains("inflação") || lower.contains("juros") || lower.contains("pib") {
+            return macroResearch(text: text)
+        }
+
+        // Agronegócio
+        if lower.contains("soja") || lower.contains("milho") || lower.contains("boi") {
+            return agroResearch(text: text)
+        }
+
+        return searchCapabilities()
+    }
+
+    private func cryptoResearch(text: String) async -> String {
+        return """
+        📊 **Pesquisa Crypto (Λ-FLOW):**
+
+        Para dados em tempo real, configure a API em **Conexões → APIs**.
+
+        **Análise estrutural atual:**
+        • Framework: Hilbert Phase Transform
+        • Modelo: VERBO QLLM (classificador)
+        • Regime: detectado via ADX + HMM
+        • Signal: aguardando confirmação de confluência
+
+        **Para análise completa diga:**
+        "Analisa BTC/USDT com Λ-FLOW"
+        """
+    }
+
+    private func macroResearch(text: String) -> String {
+        return """
+        🌍 **Pesquisa Macroeconômica:**
+
+        • **Fonte:** FRED, Banco Central, IBGE
+        • **Dados disponíveis:** inflação, PIB, juros, câmbio, liquidez
+
+        Para dados em tempo real, configure as fontes em **Conexões → APIs → Macro**.
+
+        Posso analisar:
+        • Impacto de juros em ativos de risco
+        • Correlação DXY × BTC × Commodities
+        • Regime de mercado global
+        """
+    }
+
+    private func agroResearch(text: String) -> String {
+        return """
+        🌾 **Pesquisa Agronegócio (AGREX):**
+
+        • **Cotações:** CBOT, B3, ESALQ
+        • **Frete:** ANTT Resolução 6.076/2026
+        • **Contratos:** CCV, CDR, Barter
+
+        Configure acesso à API AGREX em **Conexões → APIs → Agro**.
+
+        Posso calcular:
+        • Basis e arbitragem de mercado
+        • Custo logístico total (frete + CIOT + pedágio)
+        • Preço PPI do diesel
+        """
+    }
+
+    private func searchCapabilities() -> String {
+        return """
+        🔬 **Agente de Pesquisa (SINGULARIS + ΛNCT):**
+
+        • **Mercado:** cotações, sinais, regime
+        • **Macro:** juros, inflação, liquidez global
+        • **Agro:** soja, milho, frete, contratos
+        • **Web:** busca e síntese de informações
+
+        Pergunte diretamente: "Pesquisa sobre [tema]"
+        """
+    }
+}
+
+// MARK: - Social Agent
+
+final class SocialAgent: VERBOAgent {
+    static let shared = SocialAgent()
+    let agentID   = "social"
+    let agentName = "Social"
+    let agentIcon = "square.and.pencil"
+
+    func handle(text: String, engine: VERBOEngine) async -> String {
+        let lower = text.lowercased()
+
+        if lower.contains("instagram") { return createInstagramPost(text: text) }
+        if lower.contains("twitter") || lower.contains("tweet") { return createTweet(text: text) }
+        if lower.contains("linkedin") { return createLinkedInPost(text: text) }
+        if lower.contains("tiktok") { return createTikTokScript(text: text) }
+
+        return socialCapabilities()
+    }
+
+    private func createInstagramPost(text: String) -> String {
+        let topic = extractTopic(from: text)
+        return """
+        📸 **Plano de Post — Instagram:**
+
+        **Caption sugerida:**
+        "\(generateCaption(topic: topic))"
+
+        **Hashtags:**
+        #\(topic.replacingOccurrences(of: " ", with: "")) #verbo #ia #brasil #inovacao
+
+        **Melhor horário:** 18h–21h (maior engajamento)
+        **Formato:** Carrossel 4–8 slides ou Reels 15–30s
+
+        **Próximo passo:**
+        Diga "confirma" para eu abrir o Instagram com o texto copiado,
+        ou "adapta para [público-alvo]" para personalizar.
+        """
+    }
+
+    private func createTweet(text: String) -> String {
+        let topic = extractTopic(from: text)
+        let tweet = String("💡 \(generateCaption(topic: topic)) #\(topic.prefix(15)) #verbo".prefix(280))
+        return """
+        🐦 **Tweet pronto:**
+
+        "\(tweet)"
+
+        (\(tweet.count)/280 caracteres)
+
+        **Thread sugerida:**
+        1/3 — Contexto
+        2/3 — Desenvolvimento
+        3/3 — Call-to-action
+
+        Diga "cria thread completa" para expandir.
+        """
+    }
+
+    private func createLinkedInPost(text: String) -> String {
+        let topic = extractTopic(from: text)
+        return """
+        💼 **Post LinkedIn:**
+
+        **Título:** [Hook impactante sobre \(topic)]
+
+        **Estrutura:**
+        🎯 Problema que todo profissional enfrenta em \(topic)...
+
+        Aprendi que [insight valioso].
+
+        3 lições que mudaram minha perspectiva:
+        1️⃣ ...
+        2️⃣ ...
+        3️⃣ ...
+
+        O que você acha? Comente abaixo! 👇
+
+        **Tom:** Profissional mas próximo
+        **Ideal:** 150–300 palavras
+        """
+    }
+
+    private func createTikTokScript(text: String) -> String {
+        let topic = extractTopic(from: text)
+        return """
+        🎵 **Script TikTok (60s):**
+
+        **Hook (0–3s):** "Você sabia que \(topic) pode [fato surpreendente]?"
+
+        **Desenvolvimento (3–45s):**
+        • Ponto 1: [dado ou história]
+        • Ponto 2: [exemplo prático]
+        • Ponto 3: [dica actionável]
+
+        **CTA (45–60s):** "Segue para mais sobre \(topic)! Link na bio. 💡"
+
+        **Sons sugeridos:** trending na semana
+        **Legenda:** 3 hashtags + 1 pergunta para engajamento
+        """
+    }
+
+    private func socialCapabilities() -> String {
+        return """
+        📱 **Agente Social:**
+
+        • **Instagram:** posts, reels, stories, carrossel
+        • **Twitter/X:** tweets e threads
+        • **LinkedIn:** artigos e posts profissionais
+        • **TikTok:** scripts de vídeo
+
+        Diga: "cria post [plataforma] sobre [tema]"
+        """
+    }
+
+    private func extractTopic(from text: String) -> String {
+        let skip = ["cria", "post", "poste", "instagram", "twitter", "linkedin", "tiktok",
+                    "posta", "para", "sobre", "um", "uma", "de", "do", "da"]
+        let words = text.lowercased().components(separatedBy: .whitespaces)
+            .filter { !skip.contains($0) && $0.count > 2 }
+            .prefix(4)
+        return words.isEmpty ? "tecnologia" : words.joined(separator: " ")
+    }
+
+    private func generateCaption(topic: String) -> String {
+        let templates = [
+            "Descobri algo incrível sobre \(topic) que vai mudar sua perspectiva.",
+            "A verdade sobre \(topic) que ninguém te conta.",
+            "\(topic.prefix(1).uppercased() + topic.dropFirst()): o que aprendi depois de [X] anos.",
+            "Por que \(topic) é mais importante do que você imagina.",
+        ]
+        return templates.randomElement() ?? "Sobre \(topic)…"
+    }
+}
+
+// MARK: - Coder Agent
+
+final class CoderAgent: VERBOAgent {
+    static let shared = CoderAgent()
+    let agentID   = "coder"
+    let agentName = "Código"
+    let agentIcon = "curlybraces"
+
+    func handle(text: String) -> String {
+        let lower = text.lowercased()
+
+        if lower.contains("python") || lower.contains("script") {
+            return pythonTemplate(text: text)
+        }
+        if lower.contains("swift") || lower.contains("ios") {
+            return swiftTemplate(text: text)
+        }
+        if lower.contains("api") || lower.contains("endpoint") {
+            return apiTemplate(text: text)
+        }
+        if lower.contains("backtest") || lower.contains("estratégia") {
+            return backtestTemplate(text: text)
+        }
+
+        return coderCapabilities()
+    }
+
+    private func pythonTemplate(text: String) -> String {
+        return """
+        💻 **Script Python (template):**
+
+        ```python
+        # VERBO Script — gerado automaticamente
+        import pandas as pd
+        import numpy as np
+
+        def main():
+            # TODO: implementar lógica aqui
+            pass
+
+        if __name__ == "__main__":
+            main()
+        ```
+
+        Descreva a lógica em detalhes e a IA gerará o código completo.
+        Ou conecte a API LLM para código profissional instantâneo.
+        """
+    }
+
+    private func swiftTemplate(text: String) -> String {
+        return """
+        📱 **SwiftUI Component (template):**
+
+        ```swift
+        struct MyView: View {
+            @State private var value = ""
+
+            var body: some View {
+                VStack {
+                    Text("Olá VERBO!")
+                        .font(.title)
+                    TextField("Valor", text: $value)
+                }
+                .padding()
+            }
+        }
+        ```
+
+        Diga qual componente precisa e gero o código completo.
+        """
+    }
+
+    private func apiTemplate(text: String) -> String {
+        return """
+        🔌 **API FastAPI (template):**
+
+        ```python
+        from fastapi import FastAPI
+        from pydantic import BaseModel
+
+        app = FastAPI(title="VERBO API")
+
+        class Request(BaseModel):
+            message: str
+
+        @app.post("/chat")
+        async def chat(req: Request):
+            return {"response": f"Processando: {req.message}"}
+        ```
+
+        Configure detalhes do endpoint e gero a versão completa.
+        """
+    }
+
+    private func backtestTemplate(text: String) -> String {
+        return """
+        📊 **Backtest Template (Λ-FLOW):**
+
+        ```python
+        # VERBO Trading — Λ-FLOW Backtest
+        import pandas as pd
+
+        class Strategy:
+            def __init__(self, symbol="BTC/USDT"):
+                self.symbol = symbol
+                self.positions = []
+
+            def signal(self, df):
+                # Hilbert Phase + EMA + RSI
+                ema20 = df["close"].ewm(span=20).mean()
+                ema50 = df["close"].ewm(span=50).mean()
+                return "BUY" if ema20.iloc[-1] > ema50.iloc[-1] else "SELL"
+        ```
+
+        Conecte a API LLM para o sistema completo com backtesting real.
+        """
+    }
+
+    private func coderCapabilities() -> String {
+        return """
+        💻 **Agente de Código:**
+
+        • **Python:** scripts, análise, automação
+        • **Swift/iOS:** componentes SwiftUI
+        • **API:** FastAPI, endpoints REST
+        • **Trading:** backtesting Λ-FLOW
+        • **Agro:** cálculos AGREX, CIOT
+
+        Diga: "cria um script Python para [tarefa]"
+        """
+    }
+}
+
+// MARK: - Proactive Monitor
+
+@MainActor
+final class ProactiveMonitor: ObservableObject {
+    static let shared = ProactiveMonitor()
+
+    @Published var isActive = false
+
+    private weak var engine: VERBOEngine?
+    private var timer: Timer?
+
+    func start(engine: VERBOEngine) {
+        self.engine = engine
+        isActive    = true
+        // Verificação periódica a cada 5 minutos
+        timer = Timer.scheduledTimer(withTimeInterval: 300, repeats: true) { [weak self] _ in
+            Task { await self?.check() }
+        }
+    }
+
+    func stop() {
+        timer?.invalidate()
+        timer    = nil
+        isActive = false
+    }
+
+    private func check() async {
+        guard let engine else { return }
+
+        // Verificação de hora do dia para sugestões
+        let hour = Calendar.current.component(.hour, from: Date())
+
+        if hour == 9 {
+            engine.enqueueProactive(
+                message: "☀️ **Bom dia!** Aqui está seu briefing matinal. Alguma tarefa prioritária para hoje?",
+                agentID: "orchestrator")
+        }
+
+        if hour == 18 {
+            engine.enqueueProactive(
+                message: "🌙 **Fim de expediente!** Quer que eu resuma o que aconteceu hoje e prepare para amanhã?",
+                agentID: "memory")
+        }
+    }
+
+    func sendImmediateAlert(message: String, agentID: String = "guardian") {
+        engine?.enqueueProactive(message: message, agentID: agentID)
+    }
+
+    /// Chamado pelo BGProactiveWorker durante background tasks
+    func runBackgroundCheck() async {
+        let hour = Calendar.current.component(.hour, from: Date())
+        guard hour >= 8 && hour <= 22 else { return }
+        // Foreground check que despacha alerta para a engine se ela estiver ativa
+        await check()
+    }
+}
