@@ -51,14 +51,14 @@ final class OperatorAgent: VERBOAgent {
             let phone = extractPhone(from: text)
             if !phone.isEmpty {
                 if let url = URL(string: "tel://\(phone)") {
-                    UIApplication.shared.open(url)
+                    Task { @MainActor in await UIApplication.shared.open(url) }
                 }
                 return "📞 Iniciando chamada para \(phone)…"
             }
         }
 
         if lower.contains("abre") || lower.contains("abrir") {
-            return handleOpen(text: lower, engine: engine)
+            return handleOpen(lower, engine: engine)
         }
 
         return ""
