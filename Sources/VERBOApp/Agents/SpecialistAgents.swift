@@ -243,7 +243,7 @@ final class MailAgent: VERBOAgent {
         let body    = extractEmailBody(from: text)
 
         if !to.isEmpty || !subject.isEmpty {
-            engine.connections.composeEmail(to: to, subject: subject, body: body)
+            Task { @MainActor in engine.connections.composeEmail(to: to, subject: subject, body: body) }
             return """
             📧 **E-mail preparado:**
 
